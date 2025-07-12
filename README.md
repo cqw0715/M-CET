@@ -13,9 +13,8 @@ Key features:
 <img width="2000" height="1518" alt="Fig2" src="https://github.com/user-attachments/assets/677de531-e72c-4cab-a270-5c66d22e6e70" />
 
 The dataset consists of:
-This dataset contains **14,710** validated porcine pathogen samples, carefully balanced to represent:
 - **Positive samples**: 7,355 porcine enteric viruses (50.0%)
-- **Negative samples**: 7,355 non-targets (50.0%)
+- **Negative samples**: 7,355 porcine enteric bacteria and non-porcine enteric viruses (50.0%)
 - File: `All.csv` containing sequences with labels (0=porcine enteric viruses, 1=porcine enteric bacteria and non-porcine enteric viruses)
 
 ## Code Information
