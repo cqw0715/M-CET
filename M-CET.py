@@ -12,9 +12,9 @@ from sklearn.linear_model import LogisticRegression
 import warnings
 warnings.filterwarnings('ignore')
 
-# ==================== 注意力模块定义 ====================
+# ==================== Attention Module Definitions ====================
 
-# CBAM模块
+# CBAM Module
 def channel_attention(input_tensor, ratio=16):
     channel_axis = 1 if tf.keras.backend.image_data_format() == 'channels_first' else -1
     channels = input_tensor.shape[channel_axis]
@@ -54,7 +54,7 @@ def cbam_block(input_tensor, ratio=16, kernel_size=7):
     x = spatial_attention(x, kernel_size)
     return x
 
-# ECA模块
+# ECA Module
 def eca_block(input_tensor, kernel_size=3):
     channel_axis = 1 if tf.keras.backend.image_data_format() == 'channels_first' else -1
     channels = input_tensor.shape[channel_axis]
@@ -67,7 +67,7 @@ def eca_block(input_tensor, kernel_size=3):
     
     return Multiply()([input_tensor, attention])
 
-# Triplet Attention模块
+# Triplet Attention Module
 class BasicConv(tf.keras.layers.Layer):
     def __init__(self, out_planes, kernel_size, stride=1, padding=0, dilation=1, groups=1, relu=True, bn=True, bias=False):
         super(BasicConv, self).__init__()
@@ -128,12 +128,12 @@ class TripletAttention(tf.keras.layers.Layer):
         else:
             return (x_out11 + x_out21) / 2.0
 
-# ==================== 数据准备和特征工程 ====================
+# ==================== Data Preparation and Feature Engineering ====================
 
-# 读取完整数据集
+# Read complete dataset
 all_data = pd.read_csv('All.csv', usecols=['Sequence', 'Label'])
 
-# 定义氨基酸物理化学属性
+# Define amino acid physicochemical properties
 HYDROPHOBICITY = {'A': 0.62, 'C': 0.29, 'D': -0.90, 'E': -0.74, 'F': 1.19,
                   'G': 0.48, 'H': -0.40, 'I': 1.38, 'K': -1.50, 'L': 1.06,
                   'M': 0.64, 'N': -0.78, 'P': 0.12, 'Q': -0.85, 'R': -2.53,
@@ -190,20 +190,20 @@ def extract_combined_features(sequence):
     pseaac = compute_pseaac(sequence)
     return np.concatenate([aac, dpc, pseaac])
 
-# 特征提取
+# Feature extraction
 X_all = np.array([extract_combined_features(seq) for seq in all_data['Sequence']])
 y_all = all_data['Label'].values
 
-# 数据标准化
+# Data standardization
 scaler = StandardScaler()
 X_all = scaler.fit_transform(X_all)
 
-# ==================== 模型构建 ====================
+# ==================== Model Construction ====================
 
 def build_cbam_model(input_dim=455):
     inputs = Input(shape=(input_dim,), name='input_layer')  
     
-    # 第一层
+    # First layer
     x = Dense(512, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(inputs)  
     x = BatchNormalization()(x)
     x_reshaped = Reshape((1, 512, 1))(x)
@@ -211,7 +211,7 @@ def build_cbam_model(input_dim=455):
     x_cbam = Reshape((512,))(x_cbam)
     x = Dropout(0.5)(x_cbam)  
 
-    # 第二层
+    # Second layer
     x = Dense(256, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(x)  
     x = BatchNormalization()(x)
     x_reshaped = Reshape((1, 256, 1))(x)
@@ -219,7 +219,7 @@ def build_cbam_model(input_dim=455):
     x_cbam = Reshape((256,))(x_cbam)
     x = Dropout(0.4)(x_cbam)  
 
-    # 第三层
+    # Third layer
     x = Dense(128, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(x)  
     x = BatchNormalization()(x)
     x_reshaped = Reshape((1, 128, 1))(x)
@@ -249,21 +249,21 @@ def build_cbam_model(input_dim=455):
 def build_eca_model(input_dim=455):
     inputs = Input(shape=(input_dim,), name='input_layer')  
     
-    # 第一层
+    # First layer
     x = Dense(512, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(inputs)  
     x = BatchNormalization()(x)
     x = eca_block(Reshape((512, 1))(x))
     x = Reshape((512,))(x)
     x = Dropout(0.5)(x)  
 
-    # 第二层
+    # Second layer
     x = Dense(256, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(x)  
     x = BatchNormalization()(x)
     x = eca_block(Reshape((256, 1))(x))
     x = Reshape((256,))(x)
     x = Dropout(0.4)(x)  
 
-    # 第三层
+    # Third layer
     x = Dense(128, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(x)  
     x = BatchNormalization()(x)
     x = eca_block(Reshape((128, 1))(x))
@@ -292,7 +292,7 @@ def build_eca_model(input_dim=455):
 def build_triplet_model(input_dim=455):
     inputs = Input(shape=(input_dim,), name='input_layer')  
     
-    # 第一层
+    # First layer
     x = Dense(512, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(inputs)  
     x = BatchNormalization()(x)
     x_reshaped = Reshape((1, 512, 1))(x)
@@ -300,7 +300,7 @@ def build_triplet_model(input_dim=455):
     x_att = Reshape((512,))(x_att)
     x = Dropout(0.5)(x_att)  
 
-    # 第二层
+    # Second layer
     x = Dense(256, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(x)  
     x = BatchNormalization()(x)
     x_reshaped = Reshape((1, 256, 1))(x)
@@ -308,7 +308,7 @@ def build_triplet_model(input_dim=455):
     x_att = Reshape((256,))(x_att)
     x = Dropout(0.4)(x_att)  
 
-    # 第三层
+    # Third layer
     x = Dense(128, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(x)  
     x = BatchNormalization()(x)
     x_reshaped = Reshape((1, 128, 1))(x)
@@ -335,7 +335,7 @@ def build_triplet_model(input_dim=455):
     
     return model 
 
-# ==================== 集成模型类 ====================
+# ==================== Ensemble Model Class ====================
 
 class EnsembleModel:
     def __init__(self, model_paths, weights=None):
@@ -382,7 +382,7 @@ class EnsembleModel:
             'roc_auc': roc_auc_score(y, y_proba)
         }
 
-# ==================== Stacking集成类 ====================
+# ==================== Stacking Ensemble Class ====================
 
 class StackingModel:
     def __init__(self, base_models, meta_model):
@@ -390,23 +390,23 @@ class StackingModel:
         self.meta_model = meta_model
         
     def fit(self, X, y):
-        # 首先训练所有基模型
+        # First train all base models
         for model in self.base_models:
             model.fit(X, y)
         
-        # 生成基模型的预测作为新特征
+        # Generate base model predictions as new features
         base_preds = [model.predict(X).reshape(-1, 1) for model in self.base_models]
         X_meta = np.concatenate(base_preds, axis=1)
         
-        # 训练元模型
+        # Train meta model
         self.meta_model.fit(X_meta, y)
     
     def predict_proba(self, X):
-        # 获取基模型的预测
+        # Get base model predictions
         base_preds = [model.predict(X).reshape(-1, 1) for model in self.base_models]
         X_meta = np.concatenate(base_preds, axis=1)
         
-        # 返回元模型的预测概率
+        # Return meta model prediction probabilities
         return self.meta_model.predict_proba(X_meta)[:, 1]
     
     def predict(self, X):
@@ -427,34 +427,34 @@ class StackingModel:
             'roc_auc': roc_auc_score(y, y_proba)
         }
 
-# ==================== 训练和评估流程 ====================
+# ==================== Training and Evaluation Process ====================
 
 def train_and_evaluate():
     n_splits = 10
     kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
     
-    # 存储各模型和集成结果
+    # Store results for all models and ensembles
     cbam_results = []
     eca_results = []
     triplet_results = []
     weighted_results = []
     voting_results = []
-    stacking_results = []  # 新增Stacking结果存储
+    stacking_results = []  
     
     for fold, (train_idx, test_idx) in enumerate(kfold.split(X_all, y_all)):
-        print(f"\n=== 第 {fold+1}/{n_splits} 折交叉验证 ===")
+        print(f"\n=== Fold {fold+1}/{n_splits} Cross Validation ===")
         
         X_train, X_test = X_all[train_idx], X_all[test_idx]
         y_train, y_test = y_all[train_idx], y_all[test_idx]
         
-        # 训练配置
+        # Training configuration
         callbacks = [
             EarlyStopping(monitor='val_loss', patience=30, restore_best_weights=True),
             ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=5, min_lr=1e-6),
         ]
         
-        # 训练CBAM模型
-        print("\n训练CBAM模型...")
+        # Train CBAM model
+        print("\nTraining CBAM model...")
         cbam_model = build_cbam_model()
         cbam_model.fit(
             X_train, y_train,
@@ -466,7 +466,7 @@ def train_and_evaluate():
         )
         cbam_model.save(f'MLP_fold{fold+1}_cbam.h5')
         
-        # 评估CBAM模型
+        # Evaluate CBAM model
         y_pred_proba = cbam_model.predict(X_test).flatten()
         y_pred = (y_pred_proba > 0.5).astype(int)
         tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
@@ -478,10 +478,10 @@ def train_and_evaluate():
             'f1_score': f1_score(y_test, y_pred),
             'roc_auc': roc_auc_score(y_test, y_pred_proba)
         })
-        print(f"CBAM模型 - 准确率: {cbam_results[-1]['accuracy']:.4f} | AUC: {cbam_results[-1]['roc_auc']:.4f}")
+        print(f"CBAM Model - Accuracy: {cbam_results[-1]['accuracy']:.4f} | AUC: {cbam_results[-1]['roc_auc']:.4f}")
         
-        # 训练ECA模型
-        print("\n训练ECA模型...")
+        # Train ECA model
+        print("\nTraining ECA model...")
         eca_model = build_eca_model()
         eca_model.fit(
             X_train, y_train,
@@ -493,7 +493,7 @@ def train_and_evaluate():
         )
         eca_model.save(f'MLP_fold{fold+1}_eca.h5')
         
-        # 评估ECA模型
+        # Evaluate ECA model
         y_pred_proba = eca_model.predict(X_test).flatten()
         y_pred = (y_pred_proba > 0.5).astype(int)
         tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
@@ -505,10 +505,10 @@ def train_and_evaluate():
             'f1_score': f1_score(y_test, y_pred),
             'roc_auc': roc_auc_score(y_test, y_pred_proba)
         })
-        print(f"ECA模型 - 准确率: {eca_results[-1]['accuracy']:.4f} | AUC: {eca_results[-1]['roc_auc']:.4f}")
+        print(f"ECA Model - Accuracy: {eca_results[-1]['accuracy']:.4f} | AUC: {eca_results[-1]['roc_auc']:.4f}")
         
-        # 训练Triplet模型
-        print("\n训练Triplet模型...")
+        # Train Triplet model
+        print("\nTraining Triplet model...")
         triplet_model = build_triplet_model()
         triplet_model.fit(
             X_train, y_train,
@@ -520,7 +520,7 @@ def train_and_evaluate():
         )
         triplet_model.save(f'MLP_fold{fold+1}_triplet.h5')
         
-        # 评估Triplet模型
+        # Evaluate Triplet model
         y_pred_proba = triplet_model.predict(X_test).flatten()
         y_pred = (y_pred_proba > 0.5).astype(int)
         tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
@@ -532,16 +532,16 @@ def train_and_evaluate():
             'f1_score': f1_score(y_test, y_pred),
             'roc_auc': roc_auc_score(y_test, y_pred_proba)
         })
-        print(f"Triplet模型 - 准确率: {triplet_results[-1]['accuracy']:.4f} | AUC: {triplet_results[-1]['roc_auc']:.4f}")
+        print(f"Triplet Model - Accuracy: {triplet_results[-1]['accuracy']:.4f} | AUC: {triplet_results[-1]['roc_auc']:.4f}")
         
-        # 创建集成模型
+        # Create ensemble model
         model_paths = [
             f'MLP_fold{fold+1}_cbam.h5',
             f'MLP_fold{fold+1}_eca.h5',
             f'MLP_fold{fold+1}_triplet.h5'
         ]
         
-        # 计算权重(基于各模型的AUC)
+        # Calculate weights (based on each model's AUC)
         model_aucs = [
             cbam_results[-1]['roc_auc'],
             eca_results[-1]['roc_auc'],
@@ -551,19 +551,19 @@ def train_and_evaluate():
         
         ensemble = EnsembleModel(model_paths, weights=weights)
         
-        # 评估加权平均方法
+        # Evaluate weighted average method
         weighted_result = ensemble.evaluate(X_test, y_test, method='weighted')
         weighted_results.append(weighted_result)
-        print(f"加权平均集成 - 准确率: {weighted_result['accuracy']:.4f} | AUC: {weighted_result['roc_auc']:.4f}")
+        print(f"Weighted Average Ensemble - Accuracy: {weighted_result['accuracy']:.4f} | AUC: {weighted_result['roc_auc']:.4f}")
         
-        # 评估投票方法
+        # Evaluate voting method
         voting_result = ensemble.evaluate(X_test, y_test, method='voting')
         voting_results.append(voting_result)
-        print(f"投票集成 - 准确率: {voting_result['accuracy']:.4f} | AUC: {voting_result['roc_auc']:.4f}")
+        print(f"Voting Ensemble - Accuracy: {voting_result['accuracy']:.4f} | AUC: {voting_result['roc_auc']:.4f}")
         
-        # 新增Stacking集成
-        print("\n训练Stacking集成...")
-        # 加载基模型
+        # Stacking ensemble
+        print("\nTraining Stacking ensemble...")
+        # Load base models
         base_models = [
             load_model(f'MLP_fold{fold+1}_cbam.h5', custom_objects={
                 'TripletAttention': TripletAttention,
@@ -585,21 +585,21 @@ def train_and_evaluate():
             })
         ]
         
-         # 定义元模型(简单的逻辑回归)
+        # Define meta model (simple logistic regression)
         meta_model = LogisticRegression(penalty='l2', C=1.0, max_iter=1000)
         
-        # 创建Stacking模型
+        # Create Stacking model
         stacking_model = StackingModel(base_models, meta_model)
         
-        # 训练Stacking模型
+        # Train Stacking model
         stacking_model.fit(X_train, y_train)
         
-        # 评估Stacking模型
+        # Evaluate Stacking model
         stacking_result = stacking_model.evaluate(X_test, y_test)
         stacking_results.append(stacking_result)
-        print(f"Stacking集成 - 准确率: {stacking_result['accuracy']:.4f} | AUC: {stacking_result['roc_auc']:.4f}")
+        print(f"Stacking Ensemble - Accuracy: {stacking_result['accuracy']:.4f} | AUC: {stacking_result['roc_auc']:.4f}")
         
-    # 结果统计函数
+    # Result statistics function
     def calculate_stats(results):
         avg = {
             'accuracy': np.mean([r['accuracy'] for r in results]),
@@ -619,83 +619,83 @@ def train_and_evaluate():
         }
         return avg, std
 
-    # 计算各模型和集成方法的统计结果
+    # Calculate statistics for all models and ensemble methods
     cbam_avg, cbam_std = calculate_stats(cbam_results)
     eca_avg, eca_std = calculate_stats(eca_results)
     triplet_avg, triplet_std = calculate_stats(triplet_results)
     weighted_avg, weighted_std = calculate_stats(weighted_results)
     voting_avg, voting_std = calculate_stats(voting_results)
-    stacking_avg, stacking_std = calculate_stats(stacking_results)  # 新增Stacking统计
+    stacking_avg, stacking_std = calculate_stats(stacking_results) 
 
-    # ==================== 结果输出 ====================
+    # ==================== Result Output ====================
 
-    print("\n\n=== 最终评估结果 ===")
+    print("\n\n=== Final Evaluation Results ===")
     
-    print("\nCBAM模型结果 (±标准差):")
-    print(f"准确率: {cbam_avg['accuracy']:.4f} ± {cbam_std['accuracy']:.4f}")
-    print(f"精确率: {cbam_avg['precision']:.4f} ± {cbam_std['precision']:.4f}")
-    print(f"灵敏度: {cbam_avg['recall']:.4f} ± {cbam_std['recall']:.4f}")
-    print(f"特异度: {cbam_avg['specificity']:.4f} ± {cbam_std['specificity']:.4f}")
-    print(f"F1分数: {cbam_avg['f1_score']:.4f} ± {cbam_std['f1_score']:.4f}")
+    print("\nCBAM Model Results (±Std Dev):")
+    print(f"Accuracy: {cbam_avg['accuracy']:.4f} ± {cbam_std['accuracy']:.4f}")
+    print(f"Precision: {cbam_avg['precision']:.4f} ± {cbam_std['precision']:.4f}")
+    print(f"Recall: {cbam_avg['recall']:.4f} ± {cbam_std['recall']:.4f}")
+    print(f"Specificity: {cbam_avg['specificity']:.4f} ± {cbam_std['specificity']:.4f}")
+    print(f"F1 Score: {cbam_avg['f1_score']:.4f} ± {cbam_std['f1_score']:.4f}")
     print(f"ROC AUC: {cbam_avg['roc_auc']:.4f} ± {cbam_std['roc_auc']:.4f}")
 
-    print("\nECA模型结果 (±标准差):")
-    print(f"准确率: {eca_avg['accuracy']:.4f} ± {eca_std['accuracy']:.4f}")
-    print(f"精确率: {eca_avg['precision']:.4f} ± {eca_std['precision']:.4f}")
-    print(f"灵敏度: {eca_avg['recall']:.4f} ± {eca_std['recall']:.4f}")
-    print(f"特异度: {eca_avg['specificity']:.4f} ± {eca_std['specificity']:.4f}")
-    print(f"F1分数: {eca_avg['f1_score']:.4f} ± {eca_std['f1_score']:.4f}")
+    print("\nECA Model Results (±Std Dev):")
+    print(f"Accuracy: {eca_avg['accuracy']:.4f} ± {eca_std['accuracy']:.4f}")
+    print(f"Precision: {eca_avg['precision']:.4f} ± {eca_std['precision']:.4f}")
+    print(f"Recall: {eca_avg['recall']:.4f} ± {eca_std['recall']:.4f}")
+    print(f"Specificity: {eca_avg['specificity']:.4f} ± {eca_std['specificity']:.4f}")
+    print(f"F1 Score: {eca_avg['f1_score']:.4f} ± {eca_std['f1_score']:.4f}")
     print(f"ROC AUC: {eca_avg['roc_auc']:.4f} ± {eca_std['roc_auc']:.4f}")
 
-    print("\nTriplet模型结果 (±标准差):")
-    print(f"准确率: {triplet_avg['accuracy']:.4f} ± {triplet_std['accuracy']:.4f}")
-    print(f"精确率: {triplet_avg['precision']:.4f} ± {triplet_std['precision']:.4f}")
-    print(f"灵敏度: {triplet_avg['recall']:.4f} ± {triplet_std['recall']:.4f}")
-    print(f"特异度: {triplet_avg['specificity']:.4f} ± {triplet_std['specificity']:.4f}")
-    print(f"F1分数: {triplet_avg['f1_score']:.4f} ± {triplet_std['f1_score']:.4f}")
+    print("\nTriplet Model Results (±Std Dev):")
+    print(f"Accuracy: {triplet_avg['accuracy']:.4f} ± {triplet_std['accuracy']:.4f}")
+    print(f"Precision: {triplet_avg['precision']:.4f} ± {triplet_std['precision']:.4f}")
+    print(f"Recall: {triplet_avg['recall']:.4f} ± {triplet_std['recall']:.4f}")
+    print(f"Specificity: {triplet_avg['specificity']:.4f} ± {triplet_std['specificity']:.4f}")
+    print(f"F1 Score: {triplet_avg['f1_score']:.4f} ± {triplet_std['f1_score']:.4f}")
     print(f"ROC AUC: {triplet_avg['roc_auc']:.4f} ± {triplet_std['roc_auc']:.4f}")
 
-    print("\n加权平均集成结果 (±标准差):")
-    print(f"准确率: {weighted_avg['accuracy']:.4f} ± {weighted_std['accuracy']:.4f}")
-    print(f"精确率: {weighted_avg['precision']:.4f} ± {weighted_std['precision']:.4f}")
-    print(f"灵敏度: {weighted_avg['recall']:.4f} ± {weighted_std['recall']:.4f}")
-    print(f"特异度: {weighted_avg['specificity']:.4f} ± {weighted_std['specificity']:.4f}")
-    print(f"F1分数: {weighted_avg['f1_score']:.4f} ± {weighted_std['f1_score']:.4f}")
+    print("\nWeighted Average Ensemble Results (±Std Dev):")
+    print(f"Accuracy: {weighted_avg['accuracy']:.4f} ± {weighted_std['accuracy']:.4f}")
+    print(f"Precision: {weighted_avg['precision']:.4f} ± {weighted_std['precision']:.4f}")
+    print(f"Recall: {weighted_avg['recall']:.4f} ± {weighted_std['recall']:.4f}")
+    print(f"Specificity: {weighted_avg['specificity']:.4f} ± {weighted_std['specificity']:.4f}")
+    print(f"F1 Score: {weighted_avg['f1_score']:.4f} ± {weighted_std['f1_score']:.4f}")
     print(f"ROC AUC: {weighted_avg['roc_auc']:.4f} ± {weighted_std['roc_auc']:.4f}")
 
-    print("\n投票集成结果 (±标准差):")
-    print(f"准确率: {voting_avg['accuracy']:.4f} ± {voting_std['accuracy']:.4f}")
-    print(f"精确率: {voting_avg['precision']:.4f} ± {voting_std['precision']:.4f}")
-    print(f"灵敏度: {voting_avg['recall']:.4f} ± {voting_std['recall']:.4f}")
-    print(f"特异度: {voting_avg['specificity']:.4f} ± {voting_std['specificity']:.4f}")
-    print(f"F1分数: {voting_avg['f1_score']:.4f} ± {voting_std['f1_score']:.4f}")
+    print("\nVoting Ensemble Results (±Std Dev):")
+    print(f"Accuracy: {voting_avg['accuracy']:.4f} ± {voting_std['accuracy']:.4f}")
+    print(f"Precision: {voting_avg['precision']:.4f} ± {voting_std['precision']:.4f}")
+    print(f"Recall: {voting_avg['recall']:.4f} ± {voting_std['recall']:.4f}")
+    print(f"Specificity: {voting_avg['specificity']:.4f} ± {voting_std['specificity']:.4f}")
+    print(f"F1 Score: {voting_avg['f1_score']:.4f} ± {voting_std['f1_score']:.4f}")
     print(f"ROC AUC: {voting_avg['roc_auc']:.4f} ± {voting_std['roc_auc']:.4f}")
 
-    print("\nStacking集成结果 (±标准差):")
-    print(f"准确率: {stacking_avg['accuracy']:.4f} ± {stacking_std['accuracy']:.4f}")
-    print(f"精确率: {stacking_avg['precision']:.4f} ± {stacking_std['precision']:.4f}")
-    print(f"灵敏度: {stacking_avg['recall']:.4f} ± {stacking_std['recall']:.4f}")
-    print(f"特异度: {stacking_avg['specificity']:.4f} ± {stacking_std['specificity']:.4f}")
-    print(f"F1分数: {stacking_avg['f1_score']:.4f} ± {stacking_std['f1_score']:.4f}")
+    print("\nStacking Ensemble Results (±Std Dev):")
+    print(f"Accuracy: {stacking_avg['accuracy']:.4f} ± {stacking_std['accuracy']:.4f}")
+    print(f"Precision: {stacking_avg['precision']:.4f} ± {stacking_std['precision']:.4f}")
+    print(f"Recall: {stacking_avg['recall']:.4f} ± {stacking_std['recall']:.4f}")
+    print(f"Specificity: {stacking_avg['specificity']:.4f} ± {stacking_std['specificity']:.4f}")
+    print(f"F1 Score: {stacking_avg['f1_score']:.4f} ± {stacking_std['f1_score']:.4f}")
     print(f"ROC AUC: {stacking_avg['roc_auc']:.4f} ± {stacking_std['roc_auc']:.4f}")
 
-    # 返回所有结果供进一步分析
+    # Return all results for further analysis
     return {
         'cbam': {'avg': cbam_avg, 'std': cbam_std},
         'eca': {'avg': eca_avg, 'std': eca_std},
         'triplet': {'avg': triplet_avg, 'std': triplet_std},
         'weighted': {'avg': weighted_avg, 'std': weighted_std},
         'voting': {'avg': voting_avg, 'std': voting_std},
-        'stacking': {'avg': stacking_avg, 'std': stacking_std}  # 新增Stacking结果
+        'stacking': {'avg': stacking_avg, 'std': stacking_std} 
     }
 
-# ==================== 执行训练和评估 ====================
+# ==================== Execute Training and Evaluation ====================
 
 if __name__ == "__main__":
-    # 执行完整的训练和评估流程
+    # Execute complete training and evaluation process
     final_results = train_and_evaluate()
     
-    # 可选：保存结果到文件
+    #Save results to file
     import json
     with open('final_results.json', 'w') as f:
         json.dump(final_results, f, indent=4)
