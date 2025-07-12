@@ -77,4 +77,3 @@ Key components:
 
 # License & Contribution Guidelines
 - ✅ Free to use, modify, and distribute  
-- ✅ No liability or warranty provided  
