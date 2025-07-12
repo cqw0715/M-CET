@@ -10,7 +10,7 @@ Key features:
 - Comprehensive evaluation with 10-fold cross-validation
 
 ## Dataset Information
-<img width="2000" height="1518" alt="Fig2" src="https://github.com/user-attachments/assets/677de531-e72c-4cab-a270-5c66d22e6e70" />
+<img width="200" height="150" alt="Fig2" src="https://github.com/user-attachments/assets/677de531-e72c-4cab-a270-5c66d22e6e70" />
 
 The dataset consists of:
 - **Positive samples**: 7,355 porcine enteric viruses (50.0%)
@@ -65,3 +65,4 @@ Key components:
    pip install tensorflow==2.8.0 scikit-learn==1.0.2 pandas==1.4.2 numpy==1.22.3 matplotlib==3.5.1
 
 ## Methodology
+<img width="2250" height="2682" alt="Fig1" src="https://github.com/user-attachments/assets/fb36e2c0-eb03-4377-9269-a230e4f0a428" />
