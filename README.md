@@ -10,6 +10,10 @@ Key features:
 - Comprehensive evaluation with 10-fold cross-validation
 
 ## Dataset Information
+### Dataset source
+NCBI: https://www.ncbi.nlm.nih.gov/
+UniProt: https://www.uniprot.org/
+VirusDIP: https://db.cngb.org/virusdip/
 <img width="2000" height="1508" alt="Fig2" src="https://github.com/user-attachments/assets/677de531-e72c-4cab-a270-5c66d22e6e70" />
 
 The dataset consists of:
@@ -67,17 +71,12 @@ Key components:
 ## Methodology
 ### For the model building part, please read the diagram below
 <img width="2250" height="2682" alt="Fig1" src="https://github.com/user-attachments/assets/fb36e2c0-eb03-4377-9269-a230e4f0a428" />
-### Section A: Architecture & Feature Extraction
-This section presents the comprehensive architecture integrating both **machine learning** and **deep learning** approaches, along with the employed **feature extraction methodologies**.
-### Section B: Model Ensemble & Optimization
-Focusing on **model ensemble** and **optimization strategies**, it comparatively demonstrates three distinct integration approaches:  
-1. **Weighted Averaging**  
-2. **Voting**  
-3. **Stacking**  
-Explicit annotation of **binary classification performance metrics** is provided to visually contrast different strategies.  
-### Section C: Attention Modules
-Technical elaboration of three core attention modules:  
-- **CBAM** (Convolutional Block Attention Module)  
-- **ECA** (Efficient Channel Attention)  
-- **Triplet Attention**  
+(A) This section presents the comprehensive architecture integrating both machine learning and deep learning approaches, along with the employed feature extraction methodologies.
+(B) Focusing on model ensemble and optimization strategies, it comparatively demonstrates three distinct integration approaches—weighted averaging, voting, and stacking—with explicit annotation of binary classification performance metrics to visually contrast different strategies.
+(C) It provides a detailed technical elaboration of three core attention modules: CBAM, ECA and Triplet Attention, delineating their respective mechanisms and implementations.
 
+## Citations
+### Dataset source
+NCBI: https://www.ncbi.nlm.nih.gov/
+UniProt: https://www.uniprot.org/
+VirusDIP: https://db.cngb.org/virusdip/
