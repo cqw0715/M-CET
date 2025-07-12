@@ -10,6 +10,8 @@ Key features:
 - Comprehensive evaluation with 10-fold cross-validation
 
 ## Dataset Information
+<img width="2000" height="1518" alt="Fig2" src="https://github.com/user-attachments/assets/677de531-e72c-4cab-a270-5c66d22e6e70" />
+
 The dataset consists of:
 - Positive samples: Verified porcine enteric virus sequences
 - Negative samples: Non-viral protein sequences
