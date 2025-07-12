@@ -6,7 +6,7 @@ M-CET is an advanced deep learning framework that combines multiple attention me
 Key features:
 - Feature extraction using AAC, DPC, and PseAAC methods
 - Three attention-based neural network architectures
-- Weighted ensemble and stacking ensemble methods
+- Stacking ensemble methods
 - Comprehensive evaluation with 10-fold cross-validation
 
 ## Dataset Information
