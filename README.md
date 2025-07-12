@@ -39,3 +39,27 @@ Key components:
 3. Run the main script:
    ```bash
    python M-CET.py
+
+## Requirements
+
+### Core Dependencies
+| Library | Version | Purpose |
+|---------|---------|---------|
+| Python | 3.8+ | Base programming language |
+| TensorFlow | 2.8.0 | Deep learning framework |
+| scikit-learn | 1.0.2 | Machine learning utilities |
+| pandas | 1.4.2 | Data processing and analysis |
+| numpy | 1.22.3 | Numerical computations |
+| matplotlib | 3.5.1 | Visualization (for reproducing charts) |
+
+### Optional Dependencies
+| Library | Version | Purpose |
+|---------|---------|---------|
+| seaborn | 0.11.2 | Enhanced visualizations |
+| imbalanced-learn | 0.8.1 | Handling class imbalance (if needed) |
+| tqdm | 4.62.3 | Progress bars for long operations |
+
+### Installation
+1. **Base installation** (required):
+   ```bash
+   pip install tensorflow==2.8.0 scikit-learn==1.0.2 pandas==1.4.2 numpy==1.22.3 matplotlib==3.5.1
