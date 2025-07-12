@@ -10,7 +10,7 @@ Key features:
 - Comprehensive evaluation with 10-fold cross-validation
 
 ## Dataset Information
-<img width="200" height="150" alt="Fig2" src="https://github.com/user-attachments/assets/677de531-e72c-4cab-a270-5c66d22e6e70" />
+<img width="2000" height="1508" alt="Fig2" src="https://github.com/user-attachments/assets/677de531-e72c-4cab-a270-5c66d22e6e70" />
 
 The dataset consists of:
 - **Positive samples**: 7,355 porcine enteric viruses (50.0%)
@@ -65,4 +65,8 @@ Key components:
    pip install tensorflow==2.8.0 scikit-learn==1.0.2 pandas==1.4.2 numpy==1.22.3 matplotlib==3.5.1
 
 ## Methodology
+For the model building part, please read the diagram below
 <img width="2250" height="2682" alt="Fig1" src="https://github.com/user-attachments/assets/fb36e2c0-eb03-4377-9269-a230e4f0a428" />
+ A:This section presents the comprehensive architecture integrating both machine learning and deep learning approaches, along with the employed feature extraction methodologies. 
+ B:Focusing on model ensemble and optimization strategies, it comparatively demonstrates three distinct integration approaches4weighted averaging, voting, and stacking4with explicit annotation of binary classiûcation performance metrics to visually contrast diûerent strategies.
+ C:It provides a detailed technical elaboration of three core attention modules: CBAM, ECA and Triplet Attention, delineating their respective mechanisms and implementations.
