@@ -75,8 +75,6 @@ Key components:
 (B) Focusing on model ensemble and optimization strategies, it comparatively demonstrates three distinct integration approaches—weighted averaging, voting, and stacking—with explicit annotation of binary classification performance metrics to visually contrast different strategies.
 (C) It provides a detailed technical elaboration of three core attention modules: CBAM, ECA and Triplet Attention, delineating their respective mechanisms and implementations.
 
-## Citations
-### Dataset source
-NCBI: https://www.ncbi.nlm.nih.gov/
-UniProt: https://www.uniprot.org/
-VirusDIP: https://db.cngb.org/virusdip/
+# License & Contribution Guidelines
+- ✅ Free to use, modify, and distribute  
+- ✅ No liability or warranty provided  
