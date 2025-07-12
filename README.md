@@ -15,7 +15,7 @@ NCBI: https://www.ncbi.nlm.nih.gov/
 UniProt: https://www.uniprot.org/
 VirusDIP: https://db.cngb.org/virusdip/
 <img width="2000" height="1508" alt="Fig2" src="https://github.com/user-attachments/assets/677de531-e72c-4cab-a270-5c66d22e6e70" />
-
+To ensure data validity and reliability, we employed the CD-HIT tool to remove sequences with 100% similarity from the publicly sourced data. Through this rigorous filtering process, we obtained a final collection of 14,710 high-quality sequences suitable for analysis.
 The dataset consists of:
 - **Positive samples**: 7,355 porcine enteric viruses (50.0%)
 - **Negative samples**: 7,355 porcine enteric bacteria and non-porcine enteric viruses (50.0%)
