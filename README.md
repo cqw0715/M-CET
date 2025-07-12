@@ -1,11 +1,11 @@
 # M-CET: An ensemble learning-based model for porcine enteric virus identification
 
 ## Description
-M-CET is an advanced deep learning framework that combines multiple attention mechanisms (CBAM, ECA, and Triplet Attention) with ensemble learning techniques for accurate identification of porcine enteric viruses from protein sequences. The system extracts comprehensive sequence features and employs rigorous evaluation methods to achieve state-of-the-art performance.
+M-CET is an advanced deep learning framework that combines multiple attention mechanisms (CBAM, ECA, and Triplet Attention) with stacking ensemble learning techniques for accurate identification of porcine enteric viruses from protein sequences. The system extracts comprehensive sequence features and employs rigorous evaluation methods to achieve state-of-the-art performance.
 
 Key features:
 - Feature extraction using AAC, DPC, and PseAAC methods
-- Three attention-based neural network architectures
+- Three attention-based neural network architectures (CBAM, ECA, and Triplet Attention)
 - Stacking ensemble methods
 - Comprehensive evaluation with 10-fold cross-validation
 
@@ -13,12 +13,10 @@ Key features:
 <img width="2000" height="1518" alt="Fig2" src="https://github.com/user-attachments/assets/677de531-e72c-4cab-a270-5c66d22e6e70" />
 
 The dataset consists of:
-- Positive samples: Verified porcine enteric virus sequences
-- Negative samples: Non-viral protein sequences
-- Sequence characteristics:
-  - Length: Variable (processed to fixed feature vectors)
-  - Balanced class distribution
-- File: `All.csv` containing sequences with labels (1=virus, 0=non-virus)
+This dataset contains **14,710** validated porcine pathogen samples, carefully balanced to represent:
+- **Positive samples**: 7,355 porcine enteric viruses (50.0%)
+- **Negative samples**: 7,355 non-targets (50.0%)
+- File: `All.csv` containing sequences with labels (0=porcine enteric viruses, 1=porcine enteric bacteria and non-porcine enteric viruses)
 
 ## Code Information
 Main implementation file:
